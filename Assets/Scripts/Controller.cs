@@ -23,7 +23,7 @@ public class Controller : MonoBehaviour
                 for (int j = 0; j < 13; j++)
                 {
 
-                    stones[k, i, j] = Instantiate(stonePrefab, startPoint + new Vector3(j, (k * 10) + i * 2, 0), Quaternion.identity);
+                    stones[k, i, j] = Instantiate(stonePrefab, startPoint + new Vector3(j, (k * 10) + i * 1.5f + 2, 0), Quaternion.identity);
                     stones[k, i, j].GetComponent<SpriteRenderer>().sprite = stonesAll[count];
                     count++;
                 }
@@ -57,16 +57,19 @@ public class Controller : MonoBehaviour
         }
 
 
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 13; j++)
+      
+            for (int i = 0; i < 7; i++)
             { 
-
+                ((GameObject) myStones[i]).transform.position = startPoint + new Vector3(i, 0, 0);
             }
+
+        for (int i = 7; i < 15; i++)
+        {
+            ((GameObject)myStones[i]).transform.position = startPoint + new Vector3(i - 7, -1.35f, 0);
         }
 
-                foreach (GameObject go in myStones)
-            go.transform.position = startPoint + new Vector3(-2,0,0);
+        Debug.Log(myStones.Count);
+
 
 
 

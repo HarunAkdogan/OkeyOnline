@@ -4,40 +4,70 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    public GameObject[,] stones1 = new GameObject[5,13];
-    public GameObject[,] stones2 = new GameObject[5, 13];
+    public GameObject[,,] stones = new GameObject[2,5,13];
     public Vector3 startPoint; 
     public GameObject stonePrefab;
     public Sprite [] stonesAll;
     public SpriteMask mask;
+    private ArrayList myStones = new ArrayList();
 
     void Start()
     {
-        int index = 0;
 
-        for (int i=0; i<4; i++)
+
+        for (int k = 0; k < 2; k++)
         {
-            for (int j = 0; j < 13; j++)
+            int count = 0;
+            for (int i = 0; i < 4; i++)
             {
-                
-                stones1[i, j] = Instantiate(stonePrefab, startPoint + new Vector3(j,i*2,0), Quaternion.identity);
-                stones1[i, j].GetComponent<SpriteRenderer>().sprite = stonesAll[index];
-                index++;
+                for (int j = 0; j < 13; j++)
+                {
+
+                    stones[k, i, j] = Instantiate(stonePrefab, startPoint + new Vector3(j, (k * 10) + i * 2, 0), Quaternion.identity);
+                    stones[k, i, j].GetComponent<SpriteRenderer>().sprite = stonesAll[count];
+                    count++;
+                }
             }
         }
 
-        index = 0;
+        while (myStones.Count < 15)
+        {
+            int count2 = 0;
+            int index = Random.Range(0, 103);
+
+            for (int k = 0; k < 2; k++)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 13; j++)
+                    {
+                        if (count2 == index && !myStones.Contains(stones[k, i, j]))
+                        {
+                            myStones.Add(stones[k, i, j]);
+
+                            i = 4;
+                            j = 13;
+                            k = 2;
+                        }
+                        else
+                            count2++;
+                    }
+                }
+            }
+        }
+
 
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 13; j++)
-            {
+            { 
 
-                stones2[i, j] = Instantiate(stonePrefab, startPoint + new Vector3(j + 20, i * 2, 0), Quaternion.identity);
-                stones2[i, j].GetComponent<SpriteRenderer>().sprite = stonesAll[index];
-                index++;
             }
         }
+
+                foreach (GameObject go in myStones)
+            go.transform.position = startPoint + new Vector3(-2,0,0);
+
 
 
 

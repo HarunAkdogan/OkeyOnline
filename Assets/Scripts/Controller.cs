@@ -10,10 +10,12 @@ public class Controller : MonoBehaviour
     public Sprite [] stonesAll;
     public SpriteMask mask;
     private ArrayList myStones = new ArrayList();
+    private bool moving = false;
+    private GameObject stoneMoving;
 
     void Start()
     {
-
+        
 
         for (int k = 0; k < 2; k++)
         {
@@ -78,8 +80,40 @@ public class Controller : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        if (Input.touchCount > 0)
+        {
+            
+            Touch touch = Input.GetTouch(0);
+            
+
+            if (touch.phase == TouchPhase.Began && !moving)
+            {
+                moving = true;
+
+                RaycastHit hit;
+                Vector3 point = Camera.main.ScreenToWorldPoint(touch.position);
+                Physics.Raycast(point, Vector3.forward * 100, out hit);
+
+                //Debug.DrawRay(point2, Vector3.forward * 100, Color.red);
+
+                if (hit.collider != null && hit.collider.tag == "stone")
+                    stoneMoving = hit.collider.gameObject;
+
+
+            }
+            else if (touch.phase == TouchPhase.Moved && moving && stoneMoving != null)
+            {
+                Vector3 point = Camera.main.ScreenToWorldPoint(touch.position);
+                stoneMoving.transform.position = new Vector3(point.x, point.y, stoneMoving.transform.position.z);
+            }
+            else if (touch.phase == TouchPhase.Ended)
+            {
+                stoneMoving = null;
+                moving = false;
+            }
+
+        }
     }
 }

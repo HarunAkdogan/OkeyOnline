@@ -328,7 +328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 438ae15dd293d5649b22710679edb8bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPoint: {x: -5, y: -2, z: -1}
+  startPoint: {x: -5.55, y: -2, z: -1}
   stonePrefab: {fileID: 9068072217132481465, guid: 70e8fbea8988f3741b8ea3bdb6850165, type: 3}
   stonesAll:
   - {fileID: 4409615825392103970, guid: 8323c24f2a4a87b409e26ee48e6c79c7, type: 3}
@@ -478,7 +478,7 @@ Transform:
   m_GameObject: {fileID: 1516555500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -2.7, z: 0}
-  m_LocalScale: {x: 7, y: 7, z: 7}
+  m_LocalScale: {x: 7.1, y: 7, z: 7}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2

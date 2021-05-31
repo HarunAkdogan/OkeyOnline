@@ -5,17 +5,27 @@ using UnityEngine;
 public class Controller : MonoBehaviour
 {
     public GameObject[,,] stones = new GameObject[2,5,13];
-    public Vector3 startPoint; 
+    public Vector3 startPoint;
+    private Vector3[,] istakaDivs = new Vector3[2,12];
     public GameObject stonePrefab;
     public Sprite [] stonesAll;
     public SpriteMask mask;
     private ArrayList myStones = new ArrayList();
     private bool moving = false;
     private GameObject stoneMoving;
+    private Vector3 stoneMovingFirstPos;
 
     void Start()
     {
-        
+
+        for (int i=0; i<2; i++)
+        {
+            for (int j = 0; j < 12; j++)
+            {
+                istakaDivs[i, j] = startPoint + new Vector3(j,-i* 1.35f,0);
+            }
+        }
+
 
         for (int k = 0; k < 2; k++)
         {
@@ -60,14 +70,14 @@ public class Controller : MonoBehaviour
 
 
       
-            for (int i = 0; i < 7; i++)
-            { 
-                ((GameObject) myStones[i]).transform.position = startPoint + new Vector3(i, 0, 0);
-            }
+        for (int i = 0; i < 12; i++)
+        { 
+            ((GameObject) myStones[i]).transform.position = istakaDivs[0,i];
+        }
 
-        for (int i = 7; i < 15; i++)
+        for (int i = 12; i < 15; i++)
         {
-            ((GameObject)myStones[i]).transform.position = startPoint + new Vector3(i - 7, -1.35f, 0);
+            ((GameObject)myStones[i]).transform.position = istakaDivs[1, i -12];
         }
 
         Debug.Log(myStones.Count);
@@ -99,8 +109,10 @@ public class Controller : MonoBehaviour
                 //Debug.DrawRay(point2, Vector3.forward * 100, Color.red);
 
                 if (hit.collider != null && hit.collider.tag == "stone")
+                {
                     stoneMoving = hit.collider.gameObject;
-
+                    stoneMovingFirstPos = stoneMoving.transform.position;
+                }
 
             }
             else if (touch.phase == TouchPhase.Moved && moving && stoneMoving != null)
@@ -109,7 +121,11 @@ public class Controller : MonoBehaviour
                 stoneMoving.transform.position = new Vector3(point.x, point.y, stoneMoving.transform.position.z);
             }
             else if (touch.phase == TouchPhase.Ended)
-            {
+            {   
+                if(stoneMoving != null)
+                stoneMoving.transform.position = stoneMovingFirstPos;
+
+                stoneMovingFirstPos = Vector3.zero;
                 stoneMoving = null;
                 moving = false;
             }

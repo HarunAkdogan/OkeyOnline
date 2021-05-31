@@ -121,9 +121,41 @@ public class Controller : MonoBehaviour
                 stoneMoving.transform.position = new Vector3(point.x, point.y, stoneMoving.transform.position.z);
             }
             else if (touch.phase == TouchPhase.Ended)
-            {   
-                if(stoneMoving != null)
-                stoneMoving.transform.position = stoneMovingFirstPos;
+            {
+                if (stoneMoving != null)
+                {
+                    //stoneMoving.transform.position = stoneMovingFirstPos;
+                    bool sticked = false;
+
+                    for (int i = 0; i < 2; i++)
+                    {
+                        for (int j = 0; j < 12; j++)
+                        {
+                            if (stoneMoving.transform.position.x < istakaDivs[i, j].x + 0.5f && stoneMoving.transform.position.x > istakaDivs[i, j].x - 0.5f && stoneMoving.transform.position.y < istakaDivs[i, j].y + 0.5f && stoneMoving.transform.position.y > istakaDivs[i, j].y - 0.5f)
+                            {
+                                for (int k=0; k<15; k++)
+                                {
+                                    if(istakaDivs[i, j] == ((GameObject)myStones[k]).transform.position && ((GameObject)myStones[k]) != stoneMoving)
+                                    {
+                                        stoneMoving.transform.position = istakaDivs[i, j];
+                                        ((GameObject)myStones[k]).transform.position = stoneMovingFirstPos;
+                                    }  
+                                    else
+                                        stoneMoving.transform.position = istakaDivs[i, j];
+                                }
+                                sticked = true;
+                                j = 12;
+                                i = 2;
+                            }
+                        }
+                    }
+
+                    if(!sticked)
+                        stoneMoving.transform.position = stoneMovingFirstPos;
+
+
+
+                }
 
                 stoneMovingFirstPos = Vector3.zero;
                 stoneMoving = null;

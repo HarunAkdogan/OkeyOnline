@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Stone : MonoBehaviour
 {
+    public bool takeable = true;
+
     void Start()
     {
          

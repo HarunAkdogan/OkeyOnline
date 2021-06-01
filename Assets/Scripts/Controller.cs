@@ -28,7 +28,7 @@ public class Controller : MonoBehaviour
                 istakaDivs[i, j] = startPoint + new Vector3(j,-i* 1.35f,0);
             }
         }
-
+        
 
         for (int k = 0; k < 2; k++)
         {
@@ -64,6 +64,7 @@ public class Controller : MonoBehaviour
                         if (count2 == index && !myStones.Contains(stones[k, i, j]))
                         {
                             myStones.Add(stones[k, i, j]);
+                            stones[k, i, j].GetComponent<Stone>().takeable = false;
 
                             i = 4;
                             j = 13;
@@ -93,7 +94,7 @@ public class Controller : MonoBehaviour
         myTurn = true;
         takeOrGive = true;
         makeReceivableStone();
-
+        makeReceivablePublicStone();
 
 
 
@@ -124,7 +125,7 @@ public class Controller : MonoBehaviour
                 if (hit.collider != null && hit.collider.tag == "stone")
                 {
                     
-                    if ((myTurn && takeOrGive && inSlot(hit.collider.gameObject, slots[0])) || myStones.Contains(hit.collider.gameObject))
+                    if ((myTurn && takeOrGive && (inSlot(hit.collider.gameObject, slots[0]) || inSlot(hit.collider.gameObject, slots[2]) && hit.collider.gameObject.GetComponent<Stone>().takeable )) || myStones.Contains(hit.collider.gameObject))
                     {
                         stoneMoving = hit.collider.gameObject;
                         stoneMovingFirstPos = stoneMoving.transform.position;
@@ -147,6 +148,7 @@ public class Controller : MonoBehaviour
                     if ((myTurn && !takeOrGive && inSlot(stoneMoving, slots[3])))
                     {
                         stoneMoving.transform.position = slots[3];
+                        stoneMoving.GetComponent<Stone>().takeable = true;
                         myStones.Remove(stoneMoving);
                         sticked = true;
                         takeOrGive = true; // (ready to take) requestToServer...
@@ -257,12 +259,40 @@ public class Controller : MonoBehaviour
         }
     }
 
-    public void replaceReceivedStone(GameObject stone)
+    public void makeReceivablePublicStone()
     {
-        foreach (GameObject myStone in myStones)
-        {
 
+        bool found = false;
+
+        while (!found)
+        {
+            int count2 = 0;
+            int index = Random.Range(0, 103);
+
+            for (int k = 0; k < 2; k++)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 13; j++)
+                    {
+                        if (count2 == index && stones[k, i, j].GetComponent<Stone>().takeable)
+                        {
+
+
+                            stones[k, i, j].transform.position = slots[2];
+
+                            found = true;
+                            i = 4;
+                            j = 13;
+                            k = 2;
+
+                        }
+                        else
+                            count2++;
+                    }
+                }
+            }
         }
     }
 
-    }
+}

@@ -21,7 +21,6 @@ public class Controller : MonoBehaviour
     {
        
 
-
         for (int i=0; i<2; i++)
         {
             for (int j = 0; j < 12; j++)
@@ -145,7 +144,16 @@ public class Controller : MonoBehaviour
                     //stoneMoving.transform.position = stoneMovingFirstPos;
                     bool sticked = false, emptySlot = true;
 
-
+                    if ((myTurn && !takeOrGive && inSlot(stoneMoving, slots[3])))
+                    {
+                        stoneMoving.transform.position = slots[3];
+                        myStones.Remove(stoneMoving);
+                        sticked = true;
+                        takeOrGive = true; // (ready to take) requestToServer...
+                        myTurn = false; // requestToServer...
+                    }
+                    else
+                    {
 
                     for (int i = 0; i < 2; i++)
                     {
@@ -177,8 +185,11 @@ public class Controller : MonoBehaviour
                                 {
                                     sticked = true;
                                     stoneMoving.transform.position = istakaDivs[i, j];
-                                    if (!myStones.Contains(stoneMoving))
-                                        myStones.Add(stoneMoving);
+                                        if (!myStones.Contains(stoneMoving))
+                                        {
+                                            myStones.Add(stoneMoving);
+                                            takeOrGive = false; // (ready to give),  requestToServer...
+                                        }
                                 }
 
 
@@ -188,7 +199,7 @@ public class Controller : MonoBehaviour
                         }
                     }
 
-
+                }
                     if(!sticked)
                         stoneMoving.transform.position = stoneMovingFirstPos;
 

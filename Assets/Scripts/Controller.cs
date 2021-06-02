@@ -17,10 +17,17 @@ public class Controller : MonoBehaviour
     private GameObject stoneMoving;
     private Vector3 stoneMovingFirstPos;
 
+    private bool doubledPer = false;
+    private bool sameColorPer = false;
+    private bool sameNumberPer = false;
+
+    private bool released = false;
+
     void Start()
     {
         createStones();
-        giveMyStones();
+        //giveMyStones();
+        giveMyTestStones();
         createSlotsAndPlaceMyStones();
         makeReceivableStone();
         makeReceivablePublicStone();
@@ -43,6 +50,7 @@ public class Controller : MonoBehaviour
             if (touch.phase == TouchPhase.Began && !moving)
             {
                 moving = true;
+                released = false;
 
                 RaycastHit hit;
                 Vector3 point = Camera.main.ScreenToWorldPoint(touch.position);
@@ -140,7 +148,12 @@ public class Controller : MonoBehaviour
                 stoneMoving = null;
                 moving = false;
 
-                //controlSeries();
+
+                if (checkSeries() && !released)
+                {
+                    Debug.Log("Congratulations!");
+                    released = true;
+                }
             }
 
         }
@@ -163,14 +176,14 @@ public class Controller : MonoBehaviour
         }
 
 
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 10; i++)
         {
             ((GameObject)myStones[i]).transform.position = cueDivs[0, i];
         }
 
-        for (int i = 12; i < 15; i++)
+        for (int i = 10; i < 16; i++)
         {
-            ((GameObject)myStones[i]).transform.position = cueDivs[1, i - 12];
+            ((GameObject)myStones[i]).transform.position = cueDivs[1, i - 10];
         }
 
 
@@ -193,6 +206,15 @@ public class Controller : MonoBehaviour
         }
     }
 
+    public void giveMyTestStones()
+    {
+        for (int i=0; i<16; i++)
+        {
+            myStones.Add(stones[i]);
+        }
+    }
+
+
     public void createStones()
     {
 
@@ -206,6 +228,7 @@ public class Controller : MonoBehaviour
                     GameObject go;
                     go = Instantiate(stonePrefab, startPoint + new Vector3(j, (k * 10) + i * 1.5f + 10, 0), Quaternion.identity);
                     go.GetComponent<SpriteRenderer>().sprite = stonesAll[count];
+                    go.GetComponent<Stone>().number = j + 1;
 
                     switch (i)
                     {
@@ -272,49 +295,94 @@ public class Controller : MonoBehaviour
         }
     }
 
-    public void controlSeries()
+    public bool checkSeries()
     {
-        for (int i = 0; i < 2; i++)
-        {
-            for (int j = 0; j < 12; j++)
-            {
+        int checkRow0 = checkNext(0, 0, 0);
 
-            }
-        }
+        sameColorPer = false;
+        sameNumberPer = false;
+        doubledPer = false;
 
+        int checkRow1 = checkNext(0, 1, 0);
 
+        sameColorPer = false;
+        sameNumberPer = false;
+        doubledPer = false;
 
+        if (checkRow0 > -1 && checkRow1 > -1)
+                return true;
 
+        return false;
     }
 
-    public bool controlNeighbor(GameObject preStone, int m, int l)
+    public int checkNext(int seriesCount, int row, int col)
     {
+        int sCount = seriesCount;
+
+        if (col == 11)
+            return sCount;
+
         GameObject stone = null;
+        GameObject nextStone = null;
 
         foreach (GameObject go in myStones)
         {
-            if (cueDivs[m, l] == go.transform.position)
+            if (cueDivs[row, col] == go.transform.position)
                 stone = go;
         }
 
-
-
-        for (int k = 0; k < 2; k++)
+        foreach (GameObject go in myStones)
         {
-            for (int i = 0; i < 4; i++)
+            if (cueDivs[row, col + 1] == go.transform.position)
+                nextStone = go;
+        }
+
+        if (stone == null)
+        {
+                return checkNext(0, row, col + 1);
+        }
+
+        if (nextStone == null)
+        {
+            sameNumberPer = false;
+            sameColorPer = false;
+
+            if (!doubledPer && sCount < 2)
+                return -1;
+            else
+                return checkNext(0, row, col + 1);
+        }
+
+
+        if (stone.GetComponent<Stone>().number == nextStone.GetComponent<Stone>().number && stone.GetComponent<Stone>().color == nextStone.GetComponent<Stone>().color && !sameColorPer && !sameNumberPer)
+        {
+            doubledPer = true;
+            return checkNext(0, row, col + 1);
+
+        }
+        else if (((nextStone.GetComponent<Stone>().number == 1 && stone.GetComponent<Stone>().number == 13) || (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number + 1)) && nextStone.GetComponent<Stone>().color == stone.GetComponent<Stone>().color && !doubledPer)
+        {
+            if (sameNumberPer && sCount > 0)
+                return -1;
+            else
             {
-                for (int j = 0; j < 13; j++)
-                {
-
-
-                }
+                sameColorPer = true;
+                return checkNext(sCount + 1, row, col + 1);
+            }
+        }
+        else if (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number && nextStone.GetComponent<Stone>().color != stone.GetComponent<Stone>().color && !doubledPer)
+        {
+            if (sameColorPer && sCount > 0)
+                return -1;
+            else
+            {
+                sameNumberPer = true;
+                return checkNext(sCount + 1, row, col + 1);
             }
         }
 
-        if (stone != null)
-            return controlNeighbor(stone, m + 1, l + 1);
-        else
-            return false;
+        return -1;
     }
+
 
 }

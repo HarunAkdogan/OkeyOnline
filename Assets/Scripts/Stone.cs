@@ -5,7 +5,8 @@ using UnityEngine;
 public class Stone : MonoBehaviour
 {
     public bool takeable = true;
-
+    public int number;
+    public string color;
     void Start()
     {
          

@@ -212,10 +212,15 @@ public class Controller : MonoBehaviour
 
     public void giveMyTestStonesColors()
     {
-        for (int i=0; i<14; i++)
+        for (int i=0; i<11; i++)
         {
             myStones.Add(stones[i]);
         }
+
+        myStones.Add(stones[13]);
+        myStones.Add(stones[14]);
+        myStones.Add(stones[15]);
+
     }
 
     public void giveMyTestStonesColorsNumbers()
@@ -349,13 +354,13 @@ public class Controller : MonoBehaviour
 
     public bool checkSeries()
     {
-        int checkRow0 = checkNext(0, 0, 0);
+        int checkRow0 = checkNext(0, 0, 0, 1);
 
         sameColorPer = false;
         sameNumberPer = false;
         doubledPer = false;
 
-        int checkRow1 = checkNext(0, 1, 0);
+        int checkRow1 = checkNext(0, 1, 0, 1);
 
         sameColorPer = false;
         sameNumberPer = false;
@@ -367,11 +372,11 @@ public class Controller : MonoBehaviour
         return false;
     }
 
-    public int checkNext(int seriesCount, int row, int col)
+    public int checkNext(int seriesCount, int row, int col0, int col1)
     {
         int sCount = seriesCount;
 
-        if (col == 11)
+        if (col0 == 11)
             return sCount;
 
         GameObject stone = null;
@@ -379,19 +384,19 @@ public class Controller : MonoBehaviour
 
         foreach (GameObject go in myStones)
         {
-            if (cueDivs[row, col] == go.transform.position)
+            if (cueDivs[row, col0] == go.transform.position)
                 stone = go;
         }
 
         foreach (GameObject go in myStones)
         {
-            if (cueDivs[row, col + 1] == go.transform.position)
+            if (cueDivs[row, col1] == go.transform.position)
                 nextStone = go;
         }
 
         if (stone == null)
         {
-                return checkNext(0, row, col + 1);
+                return checkNext(0, row, col0 + 1, col1 + 1);
         }
 
         if (nextStone == null)
@@ -399,17 +404,34 @@ public class Controller : MonoBehaviour
             sameNumberPer = false;
             sameColorPer = false;
 
+            if (sCount < 1)
+                doubledPer = false;
+
             if (!doubledPer && sCount < 2)
                 return -1;
             else
-                return checkNext(0, row, col + 1);
+                return checkNext(0, row, col0 + 1, col1 + 1);
         }
 
+        //
 
+        if (stone.GetComponent<Stone>().okey)
+        {
+            return checkNext(sCount + 1, row, col0 + 1, col1 + 1);
+        }
+
+        if (nextStone.GetComponent<Stone>().okey)
+        {
+            return checkNext(sCount + 1, row, col0 , col1 + 2);
+        }
+
+        //
+
+        
         if (stone.GetComponent<Stone>().number == nextStone.GetComponent<Stone>().number && stone.GetComponent<Stone>().color == nextStone.GetComponent<Stone>().color && !sameColorPer && !sameNumberPer)
         {
             doubledPer = true;
-            return checkNext(0, row, col + 1);
+            return checkNext(1, row, col0 + 1, col1 + 1);
 
         }
         else if (((nextStone.GetComponent<Stone>().number == 1 && stone.GetComponent<Stone>().number == 13) || (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number + 1)) && nextStone.GetComponent<Stone>().color == stone.GetComponent<Stone>().color && !doubledPer)
@@ -419,7 +441,7 @@ public class Controller : MonoBehaviour
             else
             {
                 sameColorPer = true;
-                return checkNext(sCount + 1, row, col + 1);
+                return checkNext(sCount + 1, row, col0 + 1, col1 + 1);
             }
         }
         else if (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number && nextStone.GetComponent<Stone>().color != stone.GetComponent<Stone>().color && !doubledPer)
@@ -429,7 +451,7 @@ public class Controller : MonoBehaviour
             else
             {
                 sameNumberPer = true;
-                return checkNext(sCount + 1, row, col + 1);
+                return checkNext(sCount + 1, row, col0 + 1, col1 + 1);
             }
         }
 

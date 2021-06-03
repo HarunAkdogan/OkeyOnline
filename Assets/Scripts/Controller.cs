@@ -26,8 +26,12 @@ public class Controller : MonoBehaviour
     void Start()
     {
         createStones();
+
         //giveMyStones();
-        giveMyTestStones();
+        //giveMyTestStonesColors();
+        //giveMyTestStonesColorsNumbers();
+        giveMyTestStonesDoubles();
+
         createSlotsAndPlaceMyStones();
         makeReceivableStone();
         makeReceivablePublicStone();
@@ -99,7 +103,7 @@ public class Controller : MonoBehaviour
                             {
                                 if (inSlot(stoneMoving, cueDivs[i, j]))
                                 {
-                                    for (int k = 0; k < 15; k++)
+                                    for (int k = 0; k < 14; k++)
                                     {
                                         if (cueDivs[i, j] == ((GameObject)myStones[k]).transform.position && ((GameObject)myStones[k]) != stoneMoving && myStones.Contains(stoneMoving))
                                         {
@@ -176,14 +180,14 @@ public class Controller : MonoBehaviour
         }
 
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 7; i++)
         {
             ((GameObject)myStones[i]).transform.position = cueDivs[0, i];
         }
 
-        for (int i = 10; i < 16; i++)
+        for (int i = 7; i < 14; i++)
         {
-            ((GameObject)myStones[i]).transform.position = cueDivs[1, i - 10];
+            ((GameObject)myStones[i]).transform.position = cueDivs[1, i - 7];
         }
 
 
@@ -192,7 +196,7 @@ public class Controller : MonoBehaviour
 
     public void giveMyStones()
     {
-        while (myStones.Count < 15)
+        while (myStones.Count < 14)
         {
             int index = Random.Range(0, 103);
 
@@ -206,12 +210,60 @@ public class Controller : MonoBehaviour
         }
     }
 
-    public void giveMyTestStones()
+    public void giveMyTestStonesColors()
     {
-        for (int i=0; i<16; i++)
+        for (int i=0; i<14; i++)
         {
             myStones.Add(stones[i]);
         }
+    }
+
+    public void giveMyTestStonesColorsNumbers()
+    {
+        myStones.Add(stones[0]);
+        myStones.Add(stones[13]);
+        myStones.Add(stones[26]);
+        myStones.Add(stones[39]);
+
+        myStones.Add(stones[2]);
+        myStones.Add(stones[3]);
+        myStones.Add(stones[4]);
+
+        myStones.Add(stones[1]);
+        myStones.Add(stones[14]);
+        myStones.Add(stones[27]);
+        myStones.Add(stones[40]);
+
+        myStones.Add(stones[45]);
+        myStones.Add(stones[46]);
+        myStones.Add(stones[47]);
+
+
+    }
+
+    public void giveMyTestStonesDoubles()
+    {
+        myStones.Add(stones[0]);
+        myStones.Add(stones[52]);
+
+        myStones.Add(stones[1]);
+        myStones.Add(stones[53]);
+
+        myStones.Add(stones[2]);
+        myStones.Add(stones[54]);
+
+        myStones.Add(stones[3]);
+        myStones.Add(stones[55]);
+
+        myStones.Add(stones[4]);
+        myStones.Add(stones[56]);
+
+        myStones.Add(stones[5]);
+        myStones.Add(stones[57]);
+
+        myStones.Add(stones[6]);
+        myStones.Add(stones[58]);
+
     }
 
 

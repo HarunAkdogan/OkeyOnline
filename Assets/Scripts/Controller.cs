@@ -29,8 +29,8 @@ public class Controller : MonoBehaviour
 
         //giveMyStones();
         //giveMyTestStonesColors();
-        //giveMyTestStonesColorsNumbers();
-        giveMyTestStonesDoubles();
+        giveMyTestStonesColorsNumbers();
+        //giveMyTestStonesDoubles();
 
         createSlotsAndPlaceMyStones();
         makeReceivableStone();
@@ -153,7 +153,7 @@ public class Controller : MonoBehaviour
                 moving = false;
 
 
-                if (checkSeries() && !released)
+                if (!released && checkSeries()) 
                 {
                     Debug.Log("Congratulations!");
                     released = true;
@@ -233,15 +233,20 @@ public class Controller : MonoBehaviour
         myStones.Add(stones[2]);
         myStones.Add(stones[3]);
         myStones.Add(stones[4]);
+        myStones.Add(stones[5]);
 
         myStones.Add(stones[1]);
         myStones.Add(stones[14]);
         myStones.Add(stones[27]);
-        myStones.Add(stones[40]);
+        //myStones.Add(stones[40]);
+        //myStones.Add(stones[41]);
 
         myStones.Add(stones[45]);
         myStones.Add(stones[46]);
         myStones.Add(stones[47]);
+
+        //((GameObject)stones[46]).GetComponent<Stone>().okey = true;
+        //((GameObject)stones[47]).GetComponent<Stone>().okey = true;
 
 
     }
@@ -354,6 +359,10 @@ public class Controller : MonoBehaviour
 
     public bool checkSeries()
     {
+        sameColorPer = false;
+        sameNumberPer = false;
+        doubledPer = false;
+
         int checkRow0 = checkNext(0, 0, 0, 1);
 
         sameColorPer = false;
@@ -376,7 +385,7 @@ public class Controller : MonoBehaviour
     {
         int sCount = seriesCount;
 
-        if (col0 == 11)
+        if (col1 > 12)
             return sCount;
 
         GameObject stone = null;
@@ -384,19 +393,19 @@ public class Controller : MonoBehaviour
 
         foreach (GameObject go in myStones)
         {
-            if (cueDivs[row, col0] == go.transform.position)
+            if (col0 < 12 &&  cueDivs[row, col0] == go.transform.position)
                 stone = go;
         }
 
         foreach (GameObject go in myStones)
         {
-            if (cueDivs[row, col1] == go.transform.position)
+            if (col1 < 12 && cueDivs[row, col1] == go.transform.position)
                 nextStone = go;
         }
 
         if (stone == null)
         {
-                return checkNext(0, row, col0 + 1, col1 + 1);
+            return checkNext(0, row, col0 + 1, col1 + 1);
         }
 
         if (nextStone == null)
@@ -404,16 +413,16 @@ public class Controller : MonoBehaviour
             sameNumberPer = false;
             sameColorPer = false;
 
-            if (sCount < 1)
-                doubledPer = false;
 
-            if (!doubledPer && sCount < 2)
+            if (!doubledPer && sCount < 2 || doubledPer && sCount < 1)
+            {
                 return -1;
-            else
+            }
+
                 return checkNext(0, row, col0 + 1, col1 + 1);
         }
 
-        //
+        /*
 
         if (stone.GetComponent<Stone>().okey)
         {
@@ -422,36 +431,39 @@ public class Controller : MonoBehaviour
 
         if (nextStone.GetComponent<Stone>().okey)
         {
-            return checkNext(sCount + 1, row, col0 , col1 + 2);
+            return checkNext(sCount + 1, row, col0 , col1 + 1);
         }
 
-        //
+        */
 
         
         if (stone.GetComponent<Stone>().number == nextStone.GetComponent<Stone>().number && stone.GetComponent<Stone>().color == nextStone.GetComponent<Stone>().color && !sameColorPer && !sameNumberPer)
         {
+            col0 = col1;
             doubledPer = true;
-            return checkNext(1, row, col0 + 1, col1 + 1);
+            return checkNext(1, row, col0, col1 + 1);
 
         }
         else if (((nextStone.GetComponent<Stone>().number == 1 && stone.GetComponent<Stone>().number == 13) || (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number + 1)) && nextStone.GetComponent<Stone>().color == stone.GetComponent<Stone>().color && !doubledPer)
         {
+            col0 = col1;
             if (sameNumberPer && sCount > 0)
                 return -1;
             else
             {
                 sameColorPer = true;
-                return checkNext(sCount + 1, row, col0 + 1, col1 + 1);
+                return checkNext(sCount + 1, row, col0, col1 + 1);
             }
         }
         else if (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number && nextStone.GetComponent<Stone>().color != stone.GetComponent<Stone>().color && !doubledPer)
         {
+            col0 = col1;
             if (sameColorPer && sCount > 0)
                 return -1;
             else
             {
                 sameNumberPer = true;
-                return checkNext(sCount + 1, row, col0 + 1, col1 + 1);
+                return checkNext(sCount + 1, row, col0, col1 + 1);
             }
         }
 

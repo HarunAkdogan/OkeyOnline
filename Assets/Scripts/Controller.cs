@@ -238,15 +238,15 @@ public class Controller : MonoBehaviour
         myStones.Add(stones[1]);
         myStones.Add(stones[14]);
         myStones.Add(stones[27]);
-        //myStones.Add(stones[40]);
+        myStones.Add(stones[40]);
         //myStones.Add(stones[41]);
 
-        myStones.Add(stones[45]);
+        //myStones.Add(stones[45]);
         myStones.Add(stones[46]);
         myStones.Add(stones[47]);
 
-        //((GameObject)stones[46]).GetComponent<Stone>().okey = true;
-        //((GameObject)stones[47]).GetComponent<Stone>().okey = true;
+        ((GameObject)stones[46]).GetComponent<Stone>().okey = true;
+        ((GameObject)stones[47]).GetComponent<Stone>().okey = true;
 
 
     }
@@ -410,19 +410,24 @@ public class Controller : MonoBehaviour
 
         if (nextStone == null)
         {
-            sameNumberPer = false;
-            sameColorPer = false;
+            
+
+            col0 = col1;
 
 
-            if (!doubledPer && sCount < 2 || doubledPer && sCount < 1)
+            if (!doubledPer && sCount < 2 || doubledPer && sCount < 1 || !sameNumberPer && !sameColorPer)
             {
                 return -1;
             }
-
-                return checkNext(0, row, col0 + 1, col1 + 1);
+            else
+            {
+                sameNumberPer = false;
+                sameColorPer = false;
+                return checkNext(0, row, col0, col1 + 1);
+            }
         }
 
-        /*
+        
 
         if (stone.GetComponent<Stone>().okey)
         {
@@ -434,7 +439,7 @@ public class Controller : MonoBehaviour
             return checkNext(sCount + 1, row, col0 , col1 + 1);
         }
 
-        */
+        
 
         
         if (stone.GetComponent<Stone>().number == nextStone.GetComponent<Stone>().number && stone.GetComponent<Stone>().color == nextStone.GetComponent<Stone>().color && !sameColorPer && !sameNumberPer)
@@ -466,6 +471,7 @@ public class Controller : MonoBehaviour
                 return checkNext(sCount + 1, row, col0, col1 + 1);
             }
         }
+
 
         return -1;
     }

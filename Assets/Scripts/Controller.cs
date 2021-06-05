@@ -17,7 +17,7 @@ public class Controller : MonoBehaviour
     private GameObject stoneMoving;
     private Vector3 stoneMovingFirstPos;
 
-    private bool doubledPer = false;
+    private bool doubledPer = true;
     private bool sameColorPer = false;
     private bool sameNumberPer = false;
 
@@ -33,6 +33,9 @@ public class Controller : MonoBehaviour
         //giveMyTestStonesDoubles();
 
         createSlotsAndPlaceMyStones();
+
+        setIndicatorAndFakeOkeys();
+
         makeReceivableStone();
         makeReceivablePublicStone();
 
@@ -115,7 +118,7 @@ public class Controller : MonoBehaviour
                                         }
                                         else if (cueDivs[i, j] == ((GameObject)myStones[k]).transform.position && ((GameObject)myStones[k]) != stoneMoving && !myStones.Contains(stoneMoving))
                                         {
-
+                                            myStones.Add(stoneMoving);
                                             emptySlot = false;
                                             sticked = false;
                                             break;
@@ -192,6 +195,30 @@ public class Controller : MonoBehaviour
 
 
     }
+
+
+    public void setIndicatorAndFakeOkeys()
+    {
+
+        int indicator = Random.Range(0,103);
+        GameObject ind = (GameObject)stones[indicator];
+        ind.transform.position = slots[1];
+        ind.GetComponent<Stone>().takeable = false;
+
+        Debug.Log("Indicator ->" + ind.GetComponent<Stone>().color + ", " + ind.GetComponent<Stone>().number);
+
+        foreach (GameObject go in stones)
+        {
+            if (((ind.GetComponent<Stone>().number == 13 && go.GetComponent<Stone>().number == 1) || (ind.GetComponent<Stone>().number == go.GetComponent<Stone>().number - 1)) && ind.GetComponent<Stone>().color == go.GetComponent<Stone>().color)
+            {
+                go.GetComponent<Stone>().okey = true;
+                Debug.Log("Okey ->" + go.GetComponent<Stone>().color + ", " + go.GetComponent<Stone>().number);
+            }
+        }
+
+    }
+
+
 
 
     public void giveMyStones()
@@ -271,8 +298,11 @@ public class Controller : MonoBehaviour
         myStones.Add(stones[5]);
         myStones.Add(stones[57]);
 
-        myStones.Add(stones[6]);
-        myStones.Add(stones[58]);
+        myStones.Add(stones[46]);
+        myStones.Add(stones[47]);
+
+        ((GameObject)stones[46]).GetComponent<Stone>().okey = true;
+        ((GameObject)stones[47]).GetComponent<Stone>().okey = true;
 
     }
 
@@ -313,6 +343,8 @@ public class Controller : MonoBehaviour
                 }
             }
         }
+
+
     }
 
     public bool inSlot(GameObject go, Vector3 vc)
@@ -361,19 +393,18 @@ public class Controller : MonoBehaviour
     {
         sameColorPer = false;
         sameNumberPer = false;
-        doubledPer = false;
+        doubledPer = true;
 
         int checkRow0 = checkNext(0, 0, 0, 1);
 
         sameColorPer = false;
         sameNumberPer = false;
-        doubledPer = false;
 
         int checkRow1 = checkNext(0, 1, 0, 1);
 
         sameColorPer = false;
         sameNumberPer = false;
-        doubledPer = false;
+        doubledPer = true;
 
         if (checkRow0 > -1 && checkRow1 > -1)
                 return true;
@@ -415,9 +446,14 @@ public class Controller : MonoBehaviour
             col0 = col1;
 
 
-            if (!doubledPer && sCount < 2 || doubledPer && sCount < 1 || !sameNumberPer && !sameColorPer)
+            if (!doubledPer && sCount < 2 || doubledPer && sCount !=1 || !doubledPer && stone.GetComponent<Stone>().okey || (!sameColorPer && !sameNumberPer && !doubledPer))
             {
                 return -1;
+            }
+            else if(!sameNumberPer && !sameColorPer && sCount == 1)
+            {
+                
+                return checkNext(1, row, col0, col1 + 1);
             }
             else
             {
@@ -427,9 +463,10 @@ public class Controller : MonoBehaviour
             }
         }
 
-        
+        if (stone.GetComponent<Stone>().okey && nextStone.GetComponent<Stone>().okey)
+            return -1;
 
-        if (stone.GetComponent<Stone>().okey)
+            if (stone.GetComponent<Stone>().okey)
         {
             return checkNext(sCount + 1, row, col0 + 1, col1 + 1);
         }
@@ -449,8 +486,9 @@ public class Controller : MonoBehaviour
             return checkNext(1, row, col0, col1 + 1);
 
         }
-        else if (((nextStone.GetComponent<Stone>().number == 1 && stone.GetComponent<Stone>().number == 13) || (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number + 1)) && nextStone.GetComponent<Stone>().color == stone.GetComponent<Stone>().color && !doubledPer)
+        else if (((nextStone.GetComponent<Stone>().number == 1 && stone.GetComponent<Stone>().number == 13) || (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number + 1)) && nextStone.GetComponent<Stone>().color == stone.GetComponent<Stone>().color)
         {
+            doubledPer = false;
             col0 = col1;
             if (sameNumberPer && sCount > 0)
                 return -1;
@@ -460,8 +498,9 @@ public class Controller : MonoBehaviour
                 return checkNext(sCount + 1, row, col0, col1 + 1);
             }
         }
-        else if (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number && nextStone.GetComponent<Stone>().color != stone.GetComponent<Stone>().color && !doubledPer)
+        else if (nextStone.GetComponent<Stone>().number == stone.GetComponent<Stone>().number && nextStone.GetComponent<Stone>().color != stone.GetComponent<Stone>().color)
         {
+            doubledPer = false;
             col0 = col1;
             if (sameColorPer && sCount > 0)
                 return -1;

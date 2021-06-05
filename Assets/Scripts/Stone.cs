@@ -5,18 +5,23 @@ using UnityEngine;
 public class Stone : MonoBehaviour
 {
     public bool takeable = true;
+    public bool stock = true;
     public bool okey = false;
     public int number;
     public string color;
+    public Sprite original, cover;
 
-    void Start()
+   
+    public void setVisible(bool vis)
     {
-         
+        if(vis)
+        {
+            GetComponent<SpriteRenderer>().sprite = original;
+        }else
+        {
+            GetComponent<SpriteRenderer>().sprite = cover;
+        }
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

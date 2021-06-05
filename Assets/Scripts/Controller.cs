@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class Controller : MonoBehaviour
     public Vector3 startPoint;
     private Vector3[,] cueDivs = new Vector3[2, 12];
     public Vector3[] slots;
+    public Text remainTxt;
 
     public GameObject stonePrefab, slotPrefab;
     public Sprite[] stonesAll;
@@ -16,6 +18,7 @@ public class Controller : MonoBehaviour
     private bool moving = false, myTurn, takeOrGive; //true->take stone
     private GameObject stoneMoving;
     private Vector3 stoneMovingFirstPos;
+    
 
     private bool doubledPer = true;
     private bool sameColorPer = false;
@@ -23,24 +26,30 @@ public class Controller : MonoBehaviour
 
     private bool released = false;
 
+    private int remainIndex = 103;
+
     void Start()
     {
         createStones();
 
-        //giveMyStones();
+        reShuffle(stones);
+        giveMyStones();
+
         //giveMyTestStonesColors();
-        giveMyTestStonesColorsNumbers();
+        //giveMyTestStonesColorsNumbers();
         //giveMyTestStonesDoubles();
 
+        setIndicatorAndFakeOkeys();
         createSlotsAndPlaceMyStones();
 
-        setIndicatorAndFakeOkeys();
 
-        makeReceivableStone();
-        makeReceivablePublicStone();
+        //makeReceivableStone();
+        //makeReceivablePublicStone();
 
         myTurn = true;
         takeOrGive = true;
+
+        remainTxt.text = (remainIndex + 1).ToString();
 
     }
 
@@ -133,6 +142,16 @@ public class Controller : MonoBehaviour
                                         if (!myStones.Contains(stoneMoving))
                                         {
                                             myStones.Add(stoneMoving);
+
+                                            if (stoneMoving.GetComponent<Stone>().stock)
+                                            {
+                                                stoneMoving.GetComponent<Stone>().setVisible(true);
+                                                remainIndex--;
+                                                ((GameObject)stones[remainIndex]).GetComponent<Stone>().setVisible(false);
+                                                ((GameObject)stones[remainIndex]).SetActive(true);
+                                                remainTxt.text = (remainIndex + 1).ToString();
+                                            }
+
                                             takeOrGive = false; // (ready to give),  requestToServer...
                                         }
                                     }
@@ -193,6 +212,9 @@ public class Controller : MonoBehaviour
             ((GameObject)myStones[i]).transform.position = cueDivs[1, i - 7];
         }
 
+        ((GameObject)stones[remainIndex]).GetComponent<Stone>().setVisible(false);
+        ((GameObject)stones[remainIndex]).SetActive(true);
+
 
     }
 
@@ -200,8 +222,9 @@ public class Controller : MonoBehaviour
     public void setIndicatorAndFakeOkeys()
     {
 
-        int indicator = Random.Range(0,103);
-        GameObject ind = (GameObject)stones[indicator];
+        GameObject ind = (GameObject)stones[remainIndex];
+        ind.SetActive(true);
+        remainIndex--;
         ind.transform.position = slots[1];
         ind.GetComponent<Stone>().takeable = false;
 
@@ -212,6 +235,7 @@ public class Controller : MonoBehaviour
             if (((ind.GetComponent<Stone>().number == 13 && go.GetComponent<Stone>().number == 1) || (ind.GetComponent<Stone>().number == go.GetComponent<Stone>().number - 1)) && ind.GetComponent<Stone>().color == go.GetComponent<Stone>().color)
             {
                 go.GetComponent<Stone>().okey = true;
+
                 Debug.Log("Okey ->" + go.GetComponent<Stone>().color + ", " + go.GetComponent<Stone>().number);
             }
         }
@@ -223,17 +247,12 @@ public class Controller : MonoBehaviour
 
     public void giveMyStones()
     {
-        while (myStones.Count < 14)
+        for(int i=0; i<14; i++)
         {
-            int index = Random.Range(0, 103);
-
-
-            if (!myStones.Contains(stones[index]))
-            {
-                ((GameObject)stones[index]).GetComponent<Stone>().takeable = false;
-                myStones.Add(stones[index]);
-            }
-
+            myStones.Add(stones[remainIndex]);
+            ((GameObject)stones[remainIndex]).GetComponent<Stone>().stock = false;
+            ((GameObject)stones[remainIndex]).SetActive(true);
+            remainIndex--;
         }
     }
 
@@ -318,9 +337,11 @@ public class Controller : MonoBehaviour
                 for (int j = 0; j < 13; j++)
                 {
                     GameObject go;
-                    go = Instantiate(stonePrefab, startPoint + new Vector3(j, (k * 10) + i * 1.5f + 10, 0), Quaternion.identity);
+                    go = Instantiate(stonePrefab, slots[2], Quaternion.identity);
                     go.GetComponent<SpriteRenderer>().sprite = stonesAll[count];
+                    go.GetComponent<Stone>().original = stonesAll[count];
                     go.GetComponent<Stone>().number = j + 1;
+                    go.SetActive(false);
 
                     switch (i)
                     {
@@ -344,6 +365,7 @@ public class Controller : MonoBehaviour
             }
         }
 
+       
 
     }
 
@@ -514,6 +536,23 @@ public class Controller : MonoBehaviour
 
         return -1;
     }
+
+    
+
+    public void reShuffle(ArrayList list)
+    {
+        int n = list.Count - 1;
+        while (n > 1)
+        {
+            int k = Random.Range(0, n);
+            GameObject value = (GameObject)list[k];
+            list[k] = list[n];
+            list[n] = value;
+            n--;
+        }
+        
+    }
+
 
 
 }

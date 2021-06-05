@@ -111,3 +111,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   takeable: 1
+  stock: 1
+  okey: 0
+  number: 0
+  color: 
+  original: {fileID: 0}
+  cover: {fileID: -1426305625366972084, guid: 8323c24f2a4a87b409e26ee48e6c79c7, type: 3}

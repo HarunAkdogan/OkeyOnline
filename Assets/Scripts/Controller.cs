@@ -13,7 +13,6 @@ public class Controller : MonoBehaviour
 
     public GameObject stonePrefab, slotPrefab;
     public Sprite[] stonesAll;
-    public SpriteMask mask;
     private ArrayList myStones = new ArrayList();
     private bool moving = false, myTurn, takeOrGive; //true->take stone
     private GameObject stoneMoving;
@@ -26,22 +25,20 @@ public class Controller : MonoBehaviour
 
     private bool released = false;
 
-    private int remainIndex = 103;
+    private int remainIndex = 105;
 
     void Start()
     {
         createStones();
-
         reShuffle(stones);
+        setIndicatorAndFakeOkeys();
+
         giveMyStones();
 
-        //giveMyTestStonesColors();
         //giveMyTestStonesColorsNumbers();
         //giveMyTestStonesDoubles();
 
-        setIndicatorAndFakeOkeys();
         createSlotsAndPlaceMyStones();
-
 
         //makeReceivableStone();
         //makeReceivablePublicStone();
@@ -223,6 +220,7 @@ public class Controller : MonoBehaviour
     {
 
         GameObject ind = (GameObject)stones[remainIndex];
+        GameObject okeyObj = null;
         ind.SetActive(true);
         remainIndex--;
         ind.transform.position = slots[1];
@@ -234,13 +232,24 @@ public class Controller : MonoBehaviour
         {
             if (((ind.GetComponent<Stone>().number == 13 && go.GetComponent<Stone>().number == 1) || (ind.GetComponent<Stone>().number == go.GetComponent<Stone>().number - 1)) && ind.GetComponent<Stone>().color == go.GetComponent<Stone>().color)
             {
-                go.GetComponent<Stone>().okey = true;
-
+                go.GetComponent<Stone>().type = "okey";
+                okeyObj = go;
                 Debug.Log("Okey ->" + go.GetComponent<Stone>().color + ", " + go.GetComponent<Stone>().number);
             }
         }
 
-    }
+
+        foreach (GameObject go in stones)
+        {
+            if (go.GetComponent<Stone>().type == "fake") {
+                go.GetComponent<Stone>().number = okeyObj.GetComponent<Stone>().number;
+                go.GetComponent<Stone>().color = okeyObj.GetComponent<Stone>().color;
+
+               // Debug.Log("Fake " + i + " -> " + ((GameObject)stones[fakes[i]]).GetComponent<Stone>().color + ", " + ((GameObject)stones[fakes[i]]).GetComponent<Stone>().number);
+            }
+        }
+
+        }
 
 
 
@@ -256,18 +265,6 @@ public class Controller : MonoBehaviour
         }
     }
 
-    public void giveMyTestStonesColors()
-    {
-        for (int i=0; i<11; i++)
-        {
-            myStones.Add(stones[i]);
-        }
-
-        myStones.Add(stones[13]);
-        myStones.Add(stones[14]);
-        myStones.Add(stones[15]);
-
-    }
 
     public void giveMyTestStonesColorsNumbers()
     {
@@ -291,8 +288,8 @@ public class Controller : MonoBehaviour
         myStones.Add(stones[46]);
         myStones.Add(stones[47]);
 
-        ((GameObject)stones[46]).GetComponent<Stone>().okey = true;
-        ((GameObject)stones[47]).GetComponent<Stone>().okey = true;
+        ((GameObject)stones[46]).GetComponent<Stone>().type = "okey";
+        ((GameObject)stones[47]).GetComponent<Stone>().type = "okey";
 
 
     }
@@ -320,8 +317,8 @@ public class Controller : MonoBehaviour
         myStones.Add(stones[46]);
         myStones.Add(stones[47]);
 
-        ((GameObject)stones[46]).GetComponent<Stone>().okey = true;
-        ((GameObject)stones[47]).GetComponent<Stone>().okey = true;
+        ((GameObject)stones[46]).GetComponent<Stone>().type = "okey";
+        ((GameObject)stones[47]).GetComponent<Stone>().type = "okey";
 
     }
 
@@ -363,9 +360,25 @@ public class Controller : MonoBehaviour
                     count++;
                 }
             }
+
+            
+
         }
 
-       
+        for (int i = 0; i < 2; i++)
+        {
+
+            GameObject fake = Instantiate(stonePrefab, slots[2], Quaternion.identity);
+            fake.GetComponent<SpriteRenderer>().sprite = stonesAll[52];
+            fake.GetComponent<Stone>().original = stonesAll[52];
+            fake.GetComponent<Stone>().type = "fake";
+            fake.GetComponent<Stone>().number = -2;
+            fake.SetActive(false);
+
+            stones.Add(fake);
+        }
+
+
 
     }
 
@@ -468,7 +481,7 @@ public class Controller : MonoBehaviour
             col0 = col1;
 
 
-            if (!doubledPer && sCount < 2 || doubledPer && sCount !=1 || !doubledPer && stone.GetComponent<Stone>().okey || (!sameColorPer && !sameNumberPer && !doubledPer))
+            if (!doubledPer && sCount < 2 || doubledPer && sCount !=1 || doubledPer && stone.GetComponent<Stone>().type != "okey" || (!sameColorPer && !sameNumberPer && !doubledPer))
             {
                 return -1;
             }
@@ -485,15 +498,15 @@ public class Controller : MonoBehaviour
             }
         }
 
-        if (stone.GetComponent<Stone>().okey && nextStone.GetComponent<Stone>().okey)
+        if (stone.GetComponent<Stone>().type == "okey" && nextStone.GetComponent<Stone>().type == "okey")
             return -1;
 
-            if (stone.GetComponent<Stone>().okey)
+            if (stone.GetComponent<Stone>().type == "okey")
         {
             return checkNext(sCount + 1, row, col0 + 1, col1 + 1);
         }
 
-        if (nextStone.GetComponent<Stone>().okey)
+        if (nextStone.GetComponent<Stone>().type == "okey")
         {
             return checkNext(sCount + 1, row, col0 , col1 + 1);
         }
@@ -552,7 +565,6 @@ public class Controller : MonoBehaviour
         }
         
     }
-
 
 
 }

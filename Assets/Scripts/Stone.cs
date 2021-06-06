@@ -6,7 +6,7 @@ public class Stone : MonoBehaviour
 {
     public bool takeable = true;
     public bool stock = true;
-    public bool okey = false;
+    public string type = "normal";
     public int number;
     public string color;
     public Sprite original, cover;

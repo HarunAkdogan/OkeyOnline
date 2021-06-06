@@ -475,7 +475,6 @@ MonoBehaviour:
   - {fileID: 1948779204526456080, guid: 8323c24f2a4a87b409e26ee48e6c79c7, type: 3}
   - {fileID: 929493175527380656, guid: 8323c24f2a4a87b409e26ee48e6c79c7, type: 3}
   - {fileID: -5319762415968093598, guid: 8323c24f2a4a87b409e26ee48e6c79c7, type: 3}
-  mask: {fileID: 0}
 --- !u!4 &634914948
 Transform:
   m_ObjectHideFlags: 0
@@ -825,10 +824,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 563872515, guid: 70e8fbea8988f3741b8ea3bdb6850165, type: 3}
-      propertyPath: cover
-      value: 
-      objectReference: {fileID: -1426305625366972084, guid: 8323c24f2a4a87b409e26ee48e6c79c7, type: 3}
     - target: {fileID: 9068072217132481415, guid: 70e8fbea8988f3741b8ea3bdb6850165, type: 3}
       propertyPath: m_RootOrder
       value: 4

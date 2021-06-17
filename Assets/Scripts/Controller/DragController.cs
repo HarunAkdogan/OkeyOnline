@@ -24,12 +24,33 @@ namespace Controller
         private int emptyIndex;
         private int offset;
 
-        public void Start()
+        public bool isDragging = false;
+
+        private void Start()
         {
             handController = FindObjectOfType<HandController>();
             points = handController.hand.points;
         }
 
+        private void Update()
+        {
+
+            if (!isDragging) {
+
+               // Debug.Log("Not Dragging.");
+                foreach (Point p in points)
+                {
+                    if (point!=null &&  point.transform.childCount > 0)
+                    {
+                        if (p.transform.childCount > 0)
+                        {
+                            p.transform.GetChild(0).localPosition = Vector3.Lerp(p.transform.GetChild(0).localPosition, Vector3.zero, Time.deltaTime * 3);
+                        }
+                    }
+                }
+            }
+
+        }
 
         public void ControlCase(Point _point, Vector3 _mousePos)
         {
@@ -73,7 +94,7 @@ namespace Controller
                 if (points[i].transform.childCount == 0  || points[i] == tileController.transform.parent.GetComponent<Point>())
                 {
                     emptyIndex = i;
-                    Debug.Log("Solda boş yer..." + emptyIndex);
+                    //Debug.Log("Solda boş yer..." + emptyIndex);
                     break;
                 }
             }
@@ -104,7 +125,7 @@ namespace Controller
                 if (points[i].transform.childCount == 0 || points[i] == tileController.transform.parent.GetComponent<Point>())
                 {
                     emptyIndex = i;
-                    Debug.Log("Sağda boş yer.." + emptyIndex);
+                    //Debug.Log("Sağda boş yer.." + emptyIndex);
                     break;
                 }
             }
@@ -142,28 +163,35 @@ namespace Controller
         {
             if (emptyIndex > -1)
             {
-                if (emptyIndex < point.id - 1)
+                if (emptyIndex < point.id - 1) //ShiftLeft
                 {
                     for (int i= emptyIndex; i<point.id - 1; i++)
                     {
-                        if(points[i + 1].transform.childCount > 0)
-                         points[i + 1].transform.GetChild(0).SetParent(points[i].transform);
+                        if (points[i + 1].transform.childCount > 0)
+                        {
+                            points[i + 1].transform.GetChild(0).SetParent(points[i].transform);
+                            points[i].GetComponent<PointController>().DropTile(points[i + 1].tile);
+                        }
                     }
                 }
-                else if(emptyIndex > point.id - 1)
+                else if(emptyIndex > point.id - 1) // ShiftRight
                 {
                     for (int i = emptyIndex; i > point.id - 1; i--)
                     {
                         if (points[i - 1].transform.childCount > 0)
+                        {
                             points[i - 1].transform.GetChild(0).SetParent(points[i].transform);
+                            points[i].GetComponent<PointController>().DropTile(points[i - 1].tile);
+                        }
                     }
                 }
-               
+
+                point.GetComponent<PointController>().DropTile(tileController.tile);
                 tileController.parentToReturnTo = point.transform;
                 
             }
 
-            ResetPositions();
+            //ResetPositions();
 
         }
 
@@ -173,7 +201,7 @@ namespace Controller
             emptyIndex = -1;
             foreach (Point p in points)
             {
-                if (point.transform.childCount > 0 && point.transform.GetChild(0).GetComponent<TileController>() != tileController)
+                if (point != null && point.transform.childCount > 0 && point.transform.GetChild(0).GetComponent<TileController>() != tileController)
                 {
                     if (p.transform.childCount > 0)
                     {
@@ -181,6 +209,8 @@ namespace Controller
                     }
                 }
             }
+
+            //isDragging = false;
 
         }
 

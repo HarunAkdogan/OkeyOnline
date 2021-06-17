@@ -16,6 +16,9 @@ namespace Controller
         [HideInInspector]
         public DragController dragController;
 
+        [HideInInspector]
+        public SeriesController seriesController;
+
 
         int countChild;
         private void Start()
@@ -23,6 +26,7 @@ namespace Controller
             point = GetComponent<Point>();
             tableController = FindObjectOfType<TableController>();
             dragController = FindObjectOfType<DragController>();
+            seriesController = FindObjectOfType<SeriesController>();
         }
 
         public void DropTile(Tile _tile)
@@ -52,6 +56,8 @@ namespace Controller
                     dragController.ConfirmShift();
                 }
 
+                if (seriesController.CheckSeries())
+                    Debug.Log("Congratulations");
 
             }
 
@@ -72,13 +78,13 @@ namespace Controller
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            dragController.ResetPositions();
+            //dragController.ResetPositions();
         }
 
         
         public void OnEndDrag(PointerEventData eventData)
         {
-            dragController.ResetPositions();
+            dragController.isDragging = false;
         }
     }
 }

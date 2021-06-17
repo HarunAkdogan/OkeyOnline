@@ -24,7 +24,6 @@ namespace Core.Manager
          */
         public Table table;
         public TableController tableController;
-        public DragController dragController;
 
         [Header("Tile Renderer")] public TileRenderer tileRenderer;
         

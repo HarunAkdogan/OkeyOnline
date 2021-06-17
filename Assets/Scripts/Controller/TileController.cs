@@ -28,6 +28,8 @@ namespace Controller
 
             GetComponent<CanvasGroup>().blocksRaycasts = false;
             dragController.tileController = this;
+            dragController.isDragging = true;
+            dragController.ResetPositions();
 
 
         }
@@ -45,6 +47,7 @@ namespace Controller
             this.transform.SetParent(parentToReturnTo, false);
             this.transform.localPosition = Vector3.zero;
             GetComponent<CanvasGroup>().blocksRaycasts = true;
+            dragController.isDragging = false;
         }
 
     }

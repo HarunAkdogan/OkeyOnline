@@ -51,7 +51,7 @@ namespace Controller
                     tileController.parentToReturnTo = this.transform;
                     DropTile(tileController.tileRenderer.tile);
                 }
-                else
+                else if(tileController.transform.parent.GetComponent<PointController>() != this)
                 {
                     dragController.ConfirmShift();
                 }
@@ -61,29 +61,33 @@ namespace Controller
 
             }
 
+            dragController.isDragging = false;
+
         }
         
         public void OnPointerEnter(PointerEventData eventData)
         {
-            
             countChild = transform.childCount;
         }
 
         public void OnPointerMove(PointerEventData eventData)
         {
             countChild = transform.childCount;
-            dragController.ControlCase(point, eventData.position);
+
+                dragController.ControlCase(point, eventData.position);
 
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            //dragController.ResetPositions();
+           // dragController.ResetPositions();
         }
 
         
         public void OnEndDrag(PointerEventData eventData)
         {
+            
+
             dragController.isDragging = false;
         }
     }

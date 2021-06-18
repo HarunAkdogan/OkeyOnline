@@ -2,6 +2,7 @@
 using UnityEngine;
 using Mirror;
 using Model;
+using View.Renderer;
 
 namespace Controller
 {
@@ -82,7 +83,7 @@ namespace Controller
                 col0 = col1;
 
 
-                if (!doubledPer && sCount < 2 || doubledPer && sCount != 1 || doubledPer && !point.tile.isJoker || (!sameColorPer && !sameNumberPer && !doubledPer))
+                if (!doubledPer && sCount < 2 || doubledPer && sCount != 1 || doubledPer && !point.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker || (!sameColorPer && !sameNumberPer && !doubledPer))
                 {
                     return -1;
                 }
@@ -100,29 +101,29 @@ namespace Controller
             }
 
 
-            if (point.tile.isJoker && nextPoint.tile.isJoker)
+            if (point.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker && nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker)
                 return -1;
 
-            if (point.tile.isJoker)
+            if (point.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker)
             {
                 return CheckNext(sCount + 1, row, col0 + 1, col1 + 1);
             }
 
-            if (nextPoint.tile.isJoker)
+            if (nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker)
             {
                 return CheckNext(sCount + 1, row, col0, col1 + 1);
             }
 
 
 
-            if (point.tile.number == nextPoint.tile.number && point.tile.color == nextPoint.tile.color && !sameColorPer && !sameNumberPer)
+            if (point.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.number && point.transform.GetChild(0).GetComponent<TileRenderer>().tile.color == nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.color && !sameColorPer && !sameNumberPer)
             {
                 col0 = col1;
                 doubledPer = true;
                 return CheckNext(1, row, col0, col1 + 1);
 
             }
-            else if (((nextPoint.tile.number == 1 && point.tile.number == 13) || (nextPoint.tile.number == point.tile.number + 1)) && nextPoint.tile.color == point.tile.color)
+            else if (((nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == 1 && point.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == 13) || (nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == point.tile.number + 1)) && nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.color == point.transform.GetChild(0).GetComponent<TileRenderer>().tile.color)
             {
                 doubledPer = false;
                 col0 = col1;
@@ -134,7 +135,7 @@ namespace Controller
                     return CheckNext(sCount + 1, row, col0, col1 + 1);
                 }
             }
-            else if (nextPoint.tile.number == point.tile.number && nextPoint.tile.color != point.tile.color)
+            else if (nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == point.transform.GetChild(0).GetComponent<TileRenderer>().tile.number && nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.color != point.transform.GetChild(0).GetComponent<TileRenderer>().tile.color)
             {
                 doubledPer = false;
                 col0 = col1;

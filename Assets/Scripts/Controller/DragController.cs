@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Model;
 using Mirror;
@@ -16,12 +17,13 @@ namespace Controller
 
         [HideInInspector]
         public Point[] points;
+        private List<Point> movingPoints = new List<Point>();
 
         private int countChild;
         private Point point;
         private Vector3 mousePos;
 
-        private int emptyIndex;
+        private int emptyIndex, confirmedIndex;
         private int offset;
 
         public bool isDragging = false;
@@ -32,24 +34,123 @@ namespace Controller
             points = handController.hand.points;
         }
 
-        private void Update()
+        /*
+        public IEnumerator ResetPosSmooth()
         {
+            isShifting = true;
+            float elapsedTime = 0;
+            float waitTime = 0.5f;
 
+            Vector3 currentPos = confirmedIndex > point.id ? new Vector3(-20, 0, 0) : new Vector3(20, 0, 0);
+
+            if (point.id - 1 > confirmedIndex)
+            {
+                while (elapsedTime < waitTime)
+                {
+
+                    for (int i = confirmedIndex; i < point.id - 1; i++)
+                    {
+                        if (point != null && point.transform.childCount > 0 && points[i] != tileController.transform.parent.GetComponent<Point>())
+                        {
+                            if (points[i].transform.childCount > 0)
+                            {
+                                points[i].transform.GetChild(0).localPosition = Vector3.Lerp(currentPos, Vector3.zero, (elapsedTime / waitTime));
+
+                            }
+                        }
+
+                    }
+
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+
+                }
+            }
+            else if (point.id - 1 < confirmedIndex)
+            {
+                while (elapsedTime < waitTime)
+                {
+                    for (int i = confirmedIndex; i > point.id - 1; i--)
+                    {
+
+                        if (point != null && point.transform.childCount > 0 && points[i] != tileController.transform.parent.GetComponent<Point>())
+                        {
+                            if (points[i].transform.childCount > 0)
+                            {
+
+                                points[i].transform.GetChild(0).localPosition = Vector3.Lerp(currentPos, Vector3.zero, (elapsedTime / waitTime));
+
+
+                            }
+                        }
+
+                    }
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+
+                }
+            }
+
+            /*
+            while (elapsedTime < waitTime)
+            {
+                foreach (Point p in points)
+                {
+                    if (point != null && point.transform.childCount > 0 && p != tileController.transform.parent.GetComponent<Point>())
+                    {
+                        if (p.transform.childCount > 0)
+                        {
+
+                            p.transform.GetChild(0).localPosition = Vector3.Lerp(currentPos, Vector3.zero, (elapsedTime / waitTime));
+
+
+                        }
+                    }
+                }
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            */
+            /*
+        foreach (Point p in points)
+        {
+            if (point != null && point.transform.childCount > 0 && p != tileController.transform.parent.GetComponent<Point>())
+            {
+                if (p.transform.childCount > 0)
+                {
+                    p.transform.GetChild(0).localPosition = Vector3.zero;
+
+                }
+            }
+        }
+            */
+            /*
+            emptyIndex = -1;
+            confirmedIndex = -1;
+            ResetPositions();
+
+            yield return new WaitForSeconds(0.1f);
+            isShifting = false;
+            yield return null;
+        }
+    */
+        private void FixedUpdate()
+        {
+            
             if (!isDragging) {
 
                // Debug.Log("Not Dragging.");
                 foreach (Point p in points)
                 {
-                    if (point!=null &&  point.transform.childCount > 0)
-                    {
                         if (p.transform.childCount > 0)
                         {
                             p.transform.GetChild(0).localPosition = Vector3.Lerp(p.transform.GetChild(0).localPosition, Vector3.zero, Time.deltaTime * 3);
                         }
-                    }
+                    
                 }
             }
-
+            
         }
 
         public void ControlCase(Point _point, Vector3 _mousePos)
@@ -59,21 +160,17 @@ namespace Controller
             countChild = point.transform.childCount;
 
 
-            if (tileController != null && countChild == 1)
+            if (tileController != null && countChild == 1 && isDragging)
             {
                 if (point.transform.GetChild(0).GetComponent<TileController>() != tileController)
                 {
-                    if (mousePos.x > point.transform.position.x + 3)
+                    if (mousePos.x >= point.transform.position.x)
                     {
                         ShiftLeft();
                     }
-                    else if (mousePos.x < point.transform.position.x - 3)
+                    else if (mousePos.x < point.transform.position.x)
                     {
                         ShiftRight();
-                    }
-                    else
-                    {
-                        ResetPositions();
                     }
 
                 }
@@ -86,12 +183,13 @@ namespace Controller
 
         public void ShiftLeft()
         {
+            movingPoints.Clear();
             emptyIndex = -1;
             offset = point.id < 13 ? 0 : 12;
 
-            for (int i = point.id-1; i >= offset; i--)
+            for (int i = point.id - 1; i >= offset; i--)
             {
-                if (points[i].transform.childCount == 0  || points[i] == tileController.transform.parent.GetComponent<Point>())
+                if (points[i].transform.childCount == 0 || points[i] == tileController.transform.parent.GetComponent<Point>())
                 {
                     emptyIndex = i;
                     //Debug.Log("Solda boş yer..." + emptyIndex);
@@ -107,6 +205,7 @@ namespace Controller
                     {
                         if (points[i].transform.childCount > 0)
                         {
+                            movingPoints.Add(points[i]);
                             points[i].transform.GetChild(0).localPosition = new Vector3(-20, 0, 0);
                         }
                     }
@@ -117,10 +216,11 @@ namespace Controller
         }
         public void ShiftRight()
         {
+            movingPoints.Clear();
             emptyIndex = -1;
             offset = point.id < 13 ? 0 : 12;
 
-            for (int i = point.id- 1; i <= offset + 11; i++)
+            for (int i = point.id - 1; i <= offset + 11; i++)
             {
                 if (points[i].transform.childCount == 0 || points[i] == tileController.transform.parent.GetComponent<Point>())
                 {
@@ -138,6 +238,7 @@ namespace Controller
                     {
                         if (points[i].transform.childCount > 0)
                         {
+                            movingPoints.Add(points[i]);
                             points[i].transform.GetChild(0).localPosition = new Vector3(20, 0, 0);
                         }
                     }
@@ -161,11 +262,13 @@ namespace Controller
 
         public void ConfirmShift()
         {
+            ResetPositions();
+
             if (emptyIndex > -1)
             {
                 if (emptyIndex < point.id - 1) //ShiftLeft
                 {
-                    for (int i= emptyIndex; i<point.id - 1; i++)
+                    for (int i = emptyIndex; i < point.id - 1; i++)
                     {
                         if (points[i + 1].transform.childCount > 0)
                         {
@@ -174,7 +277,7 @@ namespace Controller
                         }
                     }
                 }
-                else if(emptyIndex > point.id - 1) // ShiftRight
+                else if (emptyIndex > point.id - 1) // ShiftRight
                 {
                     for (int i = emptyIndex; i > point.id - 1; i--)
                     {
@@ -188,30 +291,28 @@ namespace Controller
 
                 point.GetComponent<PointController>().DropTile(tileController.tile);
                 tileController.parentToReturnTo = point.transform;
-                
+
+                confirmedIndex = emptyIndex;
+
+               
             }
 
-            //ResetPositions();
+
+            
 
         }
 
 
         public void ResetPositions()
         {
-            emptyIndex = -1;
-            foreach (Point p in points)
-            {
-                if (point != null && point.transform.childCount > 0 && point.transform.GetChild(0).GetComponent<TileController>() != tileController)
+            
+                foreach (Point p in movingPoints)
                 {
-                    if (p.transform.childCount > 0)
-                    {
-                        p.transform.GetChild(0).localPosition = Vector3.zero;
-                    }
+                    if(p.transform.childCount > 0)
+                    p.transform.GetChild(0).localPosition = Vector3.zero;
                 }
-            }
-
-            //isDragging = false;
-
+                movingPoints.Clear();
+            
         }
 
 

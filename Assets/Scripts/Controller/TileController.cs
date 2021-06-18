@@ -29,7 +29,7 @@ namespace Controller
             GetComponent<CanvasGroup>().blocksRaycasts = false;
             dragController.tileController = this;
             dragController.isDragging = true;
-            dragController.ResetPositions();
+            //dragController.ResetPositions();
 
 
         }

@@ -1,5 +1,6 @@
 using System;
 using Model;
+using Core.Manager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -16,8 +17,10 @@ namespace Controller
         [HideInInspector]
         public DragController dragController;
 
+        
+
         [HideInInspector]
-        public SeriesController seriesController;
+        public GameManager gameManager;
 
 
         int countChild;
@@ -26,7 +29,8 @@ namespace Controller
             point = GetComponent<Point>();
             tableController = FindObjectOfType<TableController>();
             dragController = FindObjectOfType<DragController>();
-            seriesController = FindObjectOfType<SeriesController>();
+           
+            gameManager = FindObjectOfType<GameManager>();
         }
 
         public void DropTile(Tile _tile)
@@ -50,14 +54,16 @@ namespace Controller
                     
                     tileController.parentToReturnTo = this.transform;
                     DropTile(tileController.tileRenderer.tile);
+
+                   
+
                 }
-                else if(tileController.transform.parent.GetComponent<PointController>() != this)
+                else if(tileController.transform.parent.GetComponent<PointController>() != this) //&& gameManager.players[playerId ??? ].tiles.Contains(tileController.tile)
                 {
                     dragController.ConfirmShift();
                 }
 
-                if (seriesController.CheckSeries())
-                    Debug.Log("Congratulations");
+                
 
             }
 
@@ -80,14 +86,13 @@ namespace Controller
 
         public void OnPointerExit(PointerEventData eventData)
         {
-           // dragController.ResetPositions();
+           //dragController.ResetPositions();
         }
 
         
         public void OnEndDrag(PointerEventData eventData)
         {
             
-
             dragController.isDragging = false;
         }
     }

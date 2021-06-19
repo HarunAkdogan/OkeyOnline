@@ -52,38 +52,31 @@ namespace Controller
         {
             int sCount = seriesCount;
 
-            Debug.Log("Girdim, satır " + row );
 
             if ((row == 0 && col1 > 11) || (row == 1 && col1 > 23))
             {
-                Debug.Log("Taştı.");
                 return sCount;
 
             }
-            
+
 
             Point point = points[col0];
             Point nextPoint = points[col1];
 
-            Debug.Log("Cocuk0 " + point.transform.childCount);
-
-            Debug.Log("Cocuk1 " + nextPoint.transform.childCount);
-
-
 
             if (point.transform.childCount == 0)
             {
-                        Debug.Log("Ben boşum");
-                        return CheckNext(0, row, col0 + 1, col1 + 1);
+                return CheckNext(0, row, col0 + 1, col1 + 1);
             }
+
+            Tile tile = point.transform.GetChild(0).GetComponent<TileRenderer>().tile;
 
             if (nextPoint.transform.childCount == 0)
             {
-                Debug.Log("Nextim boş");
                 col0 = col1;
 
 
-                if (!doubledPer && sCount < 2 || doubledPer && sCount != 1 || doubledPer && !point.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker || (!sameColorPer && !sameNumberPer && !doubledPer))
+                if (!doubledPer && sCount < 2 || doubledPer && sCount != 1 || doubledPer && !tile.isJoker || (!sameColorPer && !sameNumberPer && !doubledPer))
                 {
                     return -1;
                 }
@@ -100,30 +93,31 @@ namespace Controller
                 }
             }
 
+            Tile nextTile = nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile;
 
-            if (point.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker && nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker)
+            if (tile.isJoker && nextTile.isJoker)
                 return -1;
 
-            if (point.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker)
+            if (tile.isJoker)
             {
                 return CheckNext(sCount + 1, row, col0 + 1, col1 + 1);
             }
 
-            if (nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.isJoker)
+            if (nextTile.isJoker)
             {
                 return CheckNext(sCount + 1, row, col0, col1 + 1);
             }
 
 
 
-            if (point.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.number && point.transform.GetChild(0).GetComponent<TileRenderer>().tile.color == nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.color && !sameColorPer && !sameNumberPer)
+            if (tile.number == nextTile.number && tile.color == nextTile.color && !sameColorPer && !sameNumberPer)
             {
                 col0 = col1;
                 doubledPer = true;
                 return CheckNext(1, row, col0, col1 + 1);
 
             }
-            else if (((nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == 1 && point.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == 13) || (nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == point.tile.number + 1)) && nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.color == point.transform.GetChild(0).GetComponent<TileRenderer>().tile.color)
+            else if (((nextTile.number == 1 && tile.number == 13) || (nextTile.number == tile.number + 1)) && nextTile.color == tile.color)
             {
                 doubledPer = false;
                 col0 = col1;
@@ -135,7 +129,7 @@ namespace Controller
                     return CheckNext(sCount + 1, row, col0, col1 + 1);
                 }
             }
-            else if (nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.number == point.transform.GetChild(0).GetComponent<TileRenderer>().tile.number && nextPoint.transform.GetChild(0).GetComponent<TileRenderer>().tile.color != point.transform.GetChild(0).GetComponent<TileRenderer>().tile.color)
+            else if (nextTile.number == tile.number && nextTile.color != tile.color)
             {
                 doubledPer = false;
                 col0 = col1;
@@ -150,8 +144,6 @@ namespace Controller
 
             return -1;
         }
-
-
 
     }
 }

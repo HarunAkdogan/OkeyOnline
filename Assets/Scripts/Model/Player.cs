@@ -44,18 +44,20 @@ namespace Model
         public void GetDeals()
         {
             var result = Enumerable.Range(0, 24).OrderBy(g => Guid.NewGuid()).Take(15).ToArray();
-            
+          
+
             int i = 0;
             foreach (var tile in tiles)
             {
-                playerHand.points[i].GetComponent<PointController>().DropTile(tile);
                 TileRenderer instantiate = Instantiate(tileRenderer);
                 instantiate.transform.SetParent(playerHand.points[result[i]].transform,false);
                 tileRenderer.tile = tile;
+                playerHand.points[i].GetComponent<PointController>().DropTile(tile);
                 tileRenderer.Render();
                 i++;
             }
 
         }
+
     }
 }

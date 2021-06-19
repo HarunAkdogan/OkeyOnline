@@ -10,7 +10,7 @@ namespace Model
         public Point[] points;
         private void Awake()
         {
-            points = new Point[24];
+            points = new Point[25];
             
             for (int i = 0; i < GetComponentsInChildren<Point>().Length; i++)
             {

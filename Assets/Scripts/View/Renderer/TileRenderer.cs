@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using Model;
 using TMPro;
@@ -7,9 +8,13 @@ using View.Helpers;
 
 namespace View.Renderer
 {
+    [Serializable]
     public class TileRenderer : NetworkBehaviour
     {
+        
+        [SyncVar]
         public Tile tile;
+        
         public TextMeshProUGUI id;
         public GameObject knob;
         public Image knobColor;
@@ -27,8 +32,8 @@ namespace View.Renderer
             
                 id.text = tile.number.ToString();
                 id.color = TileColorTypeToColor.TileColorToColor(tile.color);
-            knob.SetActive(true);
-            knobColor.color = TileColorTypeToColor.TileColorToColor(tile.color);
+                knob.SetActive(true);
+                knobColor.color = TileColorTypeToColor.TileColorToColor(tile.color);
             }
             
         }

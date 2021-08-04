@@ -17,9 +17,6 @@ namespace Model
                 GetComponentsInChildren<Point>()[i].id = i + 1;
                 points[i] = GetComponentsInChildren<Point>()[i];
             }
-
-           
-            
         }
     }
 }

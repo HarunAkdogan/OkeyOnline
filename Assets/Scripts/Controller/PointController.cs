@@ -1,74 +1,98 @@
 using System;
+using System.Linq;
+using Mirror;
 using Model;
-using Core.Manager;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using View.Renderer;
 
 namespace Controller
 {
-    public class PointController : MonoBehaviour, IDropHandler, IPointerEnterHandler,IPointerMoveHandler, IPointerExitHandler, IEndDragHandler
+    public class PointController : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerMoveHandler, IEndDragHandler
     {
-        
         public Point point;
         
-        [HideInInspector]
-        public TableController tableController;
+        public Table table;
+
+        public Tile tile;
+        public TileRenderer tileRenderer;
+        public Transform parentToReturnTo = null;
 
         [HideInInspector]
         public DragController dragController;
 
-        
-
         [HideInInspector]
-        public GameManager gameManager;
-
+        public SeriesController seriesController;
 
         int countChild;
+
+
         private void Start()
         {
             point = GetComponent<Point>();
-            tableController = FindObjectOfType<TableController>();
+            table = FindObjectOfType<Table>();
             dragController = FindObjectOfType<DragController>();
-           
-            gameManager = FindObjectOfType<GameManager>();
+
         }
 
         public void DropTile(Tile _tile)
         {
             point.tile = _tile;
         }
-
+        
         public void OnDrop(PointerEventData eventData)
         {
             TileController tileController = eventData.pointerDrag.GetComponent<TileController>();
+            Model.Player player = Model.Player.localPlayer;
 
-            if (tileController != null)
+            if (player.tiles.Count <= 14)
             {
-                if (countChild ==0)
+                if (tileController != null)
                 {
-                    if (tileController.tileRenderer.tile.number == 0)
+                    if (countChild == 0)
                     {
-                        tileController.tileRenderer.tile = tableController.PullForTile();
-                        tileController.tileRenderer.Render();
-                    } 
-                    
-                    tileController.parentToReturnTo = this.transform;
-                    DropTile(tileController.tileRenderer.tile);
+                        if (tileController.tileRenderer.tile.number == 0)
+                        {
+                            var item = table.tiles.First();
+                            
+                            // tileController.tileRenderer.tile = item;
+                            // tileController.tileRenderer.Render();
+                            // tileController.tile = item;
+                            // tileController.tileRenderer.Render();
+                            table.PullForTile();
+                            tileController.tileRenderer.tile = item;
+                            tileController.tileRenderer.Render();
+                            player.playerField.CmdPlayerTableTileDrop(tileController,item);
+                            if (player.isLocalPlayer)
+                            {
+                                player.AddTile(item);
+                            }
+                            table.RemoveTiles(item);
+                            Debug.Log("Number 0");
+                        }
+                        else
+                        {
+                            if (tileController.parentToReturnTo == Model.Player.gameManager.opponentTileField3.content)
+                            {
+                                player.AddTile(tileController.tileRenderer.tile);
+                                DropTile(tileController.tileRenderer.tile);
+                                player.playerField.CmdPlayerFieldTileDrop(tileController);
+                            }
+                           
+                        }
+                        
+                        tileController.parentToReturnTo = this.transform;
+                        DropTile(tileController.tileRenderer.tile);
+                    }
+                    else if (tileController.transform.parent.GetComponent<PointController>() != this) //&& gameManager.players[playerId ??? ].tiles.Contains(tileController.tile)
+                    {
+                        dragController.ConfirmShift();
+                    }
 
-                   
 
                 }
-                else if(tileController.transform.parent.GetComponent<PointController>() != this) //&& gameManager.players[playerId ??? ].tiles.Contains(tileController.tile)
-                {
-                    dragController.ConfirmShift();
-                }
-
-                
-
             }
-
             dragController.isDragging = false;
-
         }
         
         public void OnPointerEnter(PointerEventData eventData)
@@ -79,21 +103,15 @@ namespace Controller
         public void OnPointerMove(PointerEventData eventData)
         {
             countChild = transform.childCount;
-
-                dragController.ControlCase(point, eventData.position);
-
+            dragController.ControlCase(point, eventData.position);
+      
         }
 
-        public void OnPointerExit(PointerEventData eventData)
-        {
-           //dragController.ResetPositions();
-        }
-
-        
         public void OnEndDrag(PointerEventData eventData)
         {
-            
+
             dragController.isDragging = false;
         }
+
     }
 }

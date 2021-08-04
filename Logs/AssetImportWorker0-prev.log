@@ -1,6 +1,6 @@
 Using pre-set license
 Built from '2021.1/release' branch; Version is '2021.1.4f1 (4cd64a618c1b) revision 5035594'; Using compiler version '192528614'; Build Type 'Release'
-OS: 'Windows 10 Pro; OS build 19043.1052; Version 2009; 64bit' Language: 'tr' Physical Memory: 6091 MB
+OS: 'Windows 10 Pro; OS build 19043.1110; Version 2009; 64bit' Language: 'tr' Physical Memory: 6091 MB
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
 
  COMMAND LINE ARGUMENTS:
@@ -15,11 +15,11 @@ C:/Users/harun808/TossomOkeyTavla
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-49741
+52832
 Successfully changed project path to: C:/Users/harun808/TossomOkeyTavla
 C:/Users/harun808/TossomOkeyTavla
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 229.84 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 177.24 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2021.1.4f1 (4cd64a618c1b)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2021.1.4f1/Editor/Data/Resources/UnitySubsystems
@@ -35,44 +35,187 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2021.1.4f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2021.1.4f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/2021.1.4f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56884
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56660
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.1.4f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.004966 seconds.
+Registered in 0.005786 seconds.
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 261.70 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 155.51 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  4.671 seconds
+- Completed reload, in  7.846 seconds
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.013216 seconds.
+Registered in 0.032005 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 1.70 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 1.12 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Find all reader and writers took 1648 milliseconds
+Find all reader and writers took 186 milliseconds
 Script Module: UnityEngine.UI.dll
-Weave behaviours and messages took742 milliseconds
-Find all reader and writers took 343 milliseconds
+Weave behaviours and messages took151 milliseconds
+Find all reader and writers took 142 milliseconds
 Script Module: UnityEngine.TestRunner.dll
-Weave behaviours and messages took254 milliseconds
-Find all reader and writers took 206 milliseconds
+Weave behaviours and messages took47 milliseconds
+Find all reader and writers took 134 milliseconds
 Script Module: SimpleWebTransport.dll
-Weave behaviours and messages took29 milliseconds
-Find all reader and writers took 199 milliseconds
+Weave behaviours and messages took15 milliseconds
+Find all reader and writers took 154 milliseconds
 Script Module: Unity.VisualScripting.State.dll
-Weave behaviours and messages took10 milliseconds
-Find all reader and writers took 663 milliseconds
+Weave behaviours and messages took9 milliseconds
+Find all reader and writers took 155 milliseconds
+Script Module: PlayFab.dll
+Weave behaviours and messages took414 milliseconds
+Find all reader and writers took 148 milliseconds
 Script Module: Unity.VisualScripting.Core.dll
-Weave behaviours and messages took1673 milliseconds
-Find all reader and writers took 303 milliseconds
+Weave behaviours and messages took215 milliseconds
+Find all reader and writers took 142 milliseconds
 Script Module: Unity.VisualScripting.Flow.dll
-Weave behaviours and messages took199 milliseconds
-Find all reader and writers took 203 milliseconds
+Weave behaviours and messages took138 milliseconds
+Find all reader and writers took 173 milliseconds
 Script Module: Unity.TextMeshPro.dll
-Weave behaviours and messages took185 milliseconds
-Find all reader and writers took 919 milliseconds
+Weave behaviours and messages took136 milliseconds
+Find all reader and writers took 126 milliseconds
 Script Module: Unity.Timeline.dll
-Weave behaviours and messages took2654 milliseconds
+Weave behaviours and messages took46 milliseconds
+Find all reader and writers took 145 milliseconds
+Script Module: Telepathy.dll
+Weave behaviours and messages took4 milliseconds
+Find all reader and writers took 152 milliseconds
+Script Module: Mirror.Cloud.dll
+Weave behaviours and messages took4 milliseconds
+Find all reader and writers took 133 milliseconds
+Script Module: kcp2k.dll
+Weave behaviours and messages took6 milliseconds
+Find all reader and writers took 135 milliseconds
+Script Module: Mirror.Examples.Cloud.GUI.dll
+Weave behaviours and messages took14 milliseconds
+Find all reader and writers took 181 milliseconds
+Script Module: VSSettingsProvider.dll
+Weave behaviours and messages took1 milliseconds
+Find all reader and writers took 225 milliseconds
+Script Module: UnityEditor.TestRunner.dll
+Weave behaviours and messages took73 milliseconds
+Find all reader and writers took 201 milliseconds
+Script Module: ParrelSync.dll
+Weave behaviours and messages took4 milliseconds
+Find all reader and writers took 178 milliseconds
+Script Module: PlayFabEditorExtensions.dll
+Weave behaviours and messages took41 milliseconds
+Find all reader and writers took 156 milliseconds
+Script Module: Mirror.CompilerSymbols.dll
+Weave behaviours and messages took0 milliseconds
+Find all reader and writers took 193 milliseconds
+Script Module: UnityEditor.UI.dll
+Weave behaviours and messages took24 milliseconds
+Find all reader and writers took 152 milliseconds
+Script Module: PlayFabSDKEditor.dll
+Weave behaviours and messages took0 milliseconds
+Mono: successfully reloaded assembly
+- Completed reload, in 13.061 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.08 seconds
+Refreshing native plugins compatible for Editor in 1.16 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3456 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 128.2 MB.
+System memory in use after: 128.4 MB.
+
+Unloading 33 unused Assets to reduce memory usage. Loaded Objects now: 3904.
+Total: 5.183400 ms (FindLiveObjects: 0.363800 ms CreateObjectMapping: 0.190900 ms MarkObjects: 4.509400 ms  DeleteObjects: 0.116800 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/Prefabs/Tile.prefab
+  artifactKey: Guid(48efabcee419a45578af82f856ac1e0f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Tile.prefab using Guid(48efabcee419a45578af82f856ac1e0f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dac53fa8eb01c7f2914575a67be481ca') in 0.209050 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.024390 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.26 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  3.177 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.27 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3436 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 126.9 MB.
+System memory in use after: 127.2 MB.
+
+Unloading 26 unused Assets to reduce memory usage. Loaded Objects now: 3908.
+Total: 4.835200 ms (FindLiveObjects: 0.401900 ms CreateObjectMapping: 0.336900 ms MarkObjects: 3.989400 ms  DeleteObjects: 0.104600 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 449.463341 seconds.
+  path: Assets/Scripts/Controller/TileController.cs
+  artifactKey: Guid(ca74480518be42c1963ea65ac9471bc2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Controller/TileController.cs using Guid(ca74480518be42c1963ea65ac9471bc2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f939cf3f39a3be21946f0b0c810cf011') in 0.066371 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.022167 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.22 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  2.869 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.17 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3436 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 127.0 MB.
+System memory in use after: 127.2 MB.
+
+Unloading 25 unused Assets to reduce memory usage. Loaded Objects now: 3912.
+Total: 8.237600 ms (FindLiveObjects: 2.213800 ms CreateObjectMapping: 0.681700 ms MarkObjects: 5.185900 ms  DeleteObjects: 0.152600 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.017814 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.26 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  3.009 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.63 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3436 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 127.0 MB.
+System memory in use after: 127.3 MB.
+
+Unloading 25 unused Assets to reduce memory usage. Loaded Objects now: 3916.
+Total: 4.665100 ms (FindLiveObjects: 0.347600 ms CreateObjectMapping: 0.231300 ms MarkObjects: 3.988200 ms  DeleteObjects: 0.095400 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.014155 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.31 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  2.785 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.24 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3436 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 127.1 MB.
+System memory in use after: 127.3 MB.
+
+Unloading 25 unused Assets to reduce memory usage. Loaded Objects now: 3920.
+Total: 5.416800 ms (FindLiveObjects: 0.342800 ms CreateObjectMapping: 0.214000 ms MarkObjects: 4.762400 ms  DeleteObjects: 0.094800 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file

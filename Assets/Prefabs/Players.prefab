@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2887243675761125120}
   - component: {fileID: 514031676389381610}
   - component: {fileID: 3940566533023138192}
+  - component: {fileID: 2249935651515000490}
   m_Layer: 0
   m_Name: Players
   m_TagString: Untagged
@@ -64,5 +65,24 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   tiles: []
+  playerType: 0
+  playerId: 0
   playerHand: {fileID: 0}
+  tileRenderer: {fileID: 7723068871997151433, guid: 48efabcee419a45578af82f856ac1e0f, type: 3}
+  playerField: {fileID: 2249935651515000490}
+--- !u!114 &2249935651515000490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4506448797086393123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee486a6b0bf945d7bbf08ee491a34523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  player: {fileID: 3940566533023138192}
   tileRenderer: {fileID: 7723068871997151433, guid: 48efabcee419a45578af82f856ac1e0f, type: 3}

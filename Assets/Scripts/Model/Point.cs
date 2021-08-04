@@ -8,6 +8,5 @@ namespace Model
         public int id;
 
         public Tile tile;
-
     }
 }

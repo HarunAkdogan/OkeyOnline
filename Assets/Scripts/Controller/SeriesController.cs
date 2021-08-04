@@ -21,8 +21,9 @@ namespace Controller
 
         private void Start()
         {
-            handController = FindObjectOfType<HandController>();
-            points = handController.hand.points;
+            //handController = FindObjectOfType<HandController>();
+            //points = handController.hand.points;
+            //points = Model.Player.localPlayer.playerHand.points;
 
         }
         public bool CheckSeries()

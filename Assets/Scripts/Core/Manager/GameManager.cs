@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Controller;
 using Mirror;
 using Model;
+using UnityEditor;
 using UnityEngine;
 using View.Renderer;
 using Random = UnityEngine.Random;
@@ -14,8 +16,9 @@ namespace Core.Manager
     {
         public static GameManager instance;
         [Header("All Tiles")]
-        public List<Tile> allTiles = new List<Tile>(); //Butun Taslar
-
+        
+        // public List<Tile> allTiles = new List<Tile>(); //Butun Taslar
+        readonly public SyncList<Tile> allTiles = new SyncList<Tile>();
         
         [Header("Table")]
         /*
@@ -23,27 +26,42 @@ namespace Core.Manager
          * Stack veri yapisinda.
          */
         public Table table;
-        public TableController tableController;
+        
 
         [Header("Tile Renderer")] public TileRenderer tileRenderer;
+
+        [Header("Tile Indicator")]  [SyncVar] public Tile ind;
         
         [Header("Players")]
         public List<Model.Player> players = new List<Model.Player>();
 
 
+        [Header("EnemyFields")] 
+        public PlayerTileField playerTileField;
+        public PlayerTileField opponentTileField;
+        public PlayerTileField opponentTileField2;
+        public PlayerTileField opponentTileField3;
+        
+        [Header("Game Loop Seconds")]
+        private WaitForSeconds m_StartWait;         // Used to have a delay whilst the round starts.
+        private WaitForSeconds m_EndWait;   
+        
         private void Awake()
         {
             instance = this;
         }
 
+        
         public void PlayersAdd(Model.Player playersPlay)
         {
             players.Add(playersPlay);
         }
         
-        
+        [ServerCallback]
         private void Start()
         {
+            m_StartWait = new WaitForSeconds(0.5f);
+            m_EndWait = new WaitForSeconds(0.5f);
             StartCoroutine(InitGame());
         }
 
@@ -54,65 +72,162 @@ namespace Core.Manager
         
         IEnumerator InitGame()
         {
-            while (players.Count <= 0)
+            while (players.Count < 1)
             {
                 yield return null;
             }
+
             
-            CreateAllTiles(); //Butun Taslari Olustur
-            SetFalseJokers();
-            Shuffler(allTiles);
-            CreateTableTiles(); //Taslari Stacke ekle.
-            StartGame();
+            yield return StartCoroutine(GetPlayerSettings());
+            yield return StartCoroutine(CreateAllTiles());
+            yield return StartCoroutine(SetFalseJokers());
+            yield return StartCoroutine(Shuffler(allTiles));
+            yield return StartCoroutine(CreateTableTiles()); //Taslari Stacke ekle.
+            yield return StartCoroutine(StartGame());
         }
 
-        private void StartGame()
+        IEnumerator GetPlayerSettings()
         {
-            players[0].GiveTiles(tableController.GetNTile(15));
+            RpcGetPlayerSettings();
+            yield return m_StartWait;
+        }
+
+        [ClientRpc]
+        void RpcGetPlayerSettings()
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+                players[i].playerId = i + 1;
+
+                switch (players[i].playerId)
+                {
+                    case 1:
+                        players[i].playerType = PlayerType.Player1; 
+                        break;
+                    case 2: 
+                        players[i].playerType = PlayerType.Player2;
+                        break;
+                    case 3: 
+                        players[i].playerType = PlayerType.Player3;
+                        break;
+                        
+                    case 4: 
+                        players[i].playerType = PlayerType.Player4;
+                        break;
+                    default: break;
+                }
+
+                players[i].AddOpponents(players);
+            }
+        }
+        
+        private IEnumerator StartGame()
+        {
+            // RpcStartGame();
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                if(i==0)
+                    table.GetNTile(15, players[i]);
+                else
+                    table.GetNTile(14, players[i]);
+            }
+
+                yield return m_StartWait;
+        }
+
+        [ClientRpc]
+        private void RpcStartGame()
+        {
+            
+            // players[0].GiveTiles(table.GetNTile(15));
+            
+            // players[1].GiveTiles(tableController.GetNTile(14));
+            Debug.Log("RpcStartGame");
             
             (players[0] as Model.Player).GetDeals();
+            // (players[1] as Model.Player).GetDeals();
         }
 
         /// <summary>
         /// All Stones Created
         /// </summary>
-        private void CreateAllTiles()
+        private IEnumerator CreateAllTiles()
         {
-            for (int loops = 0; loops < 2; loops++)
+            if (isServer)
             {
-                for (int colors = 0; colors < 4; colors++)
+                for (int loops = 0; loops < 2; loops++)
                 {
-                    for (int number = 1; number < 14; number++)
+                    for (int colors = 0; colors < 4; colors++)
                     {
-                        allTiles.Add(new Tile(number,number, Tile.IntToTileColor(colors), false,false));
-                        
+                        for (int number = 1; number < 14; number++)
+                        {
+                            int id = Random.Range(100, 1000);
+                            allTiles.Add(new Tile(id,number, Tile.IntToTileColor(colors), false,false));
+                        }
                     }
                 }
+                
             }
+            RpcCreateAllTiles();
+            yield return m_StartWait;
         }
-        
+
+        [ClientRpc]
+        private void RpcCreateAllTiles()
+        {
+            
+            Debug.Log("RpcCreateAllTiles");
+        }
+
         /// <summary>
         /// Gostergenin, Okeylerin ve Sahte Okeylerin belirlenmes
         /// </summary>
-        void SetFalseJokers(){
+        IEnumerator SetFalseJokers()
+        {
             
-            //Todo Bagimlilik kontrolu!
             Tile jokerTile = SetJoker();
-             for (int i = 0; i < 2; i++)
-             {
-                 Tile falseTile = new Tile(jokerTile.number, jokerTile.number, jokerTile.color,false,true);
-                 allTiles.Add(falseTile);
-                 Debug.LogWarning("FalseJoker Tile -> " + falseTile.number + ", " + falseTile.color);
-             }
+            tileRenderer.tile = ind;
+            Debug.LogWarning("Ind Tile -> " + ind.number + ", " + ind.color);
+            for (int i = 0; i < 2; i++)
+            {
+                Tile falseTile = new Tile(jokerTile.number, jokerTile.number, jokerTile.color,false,true);
+                allTiles.Add(falseTile);
+                Debug.LogWarning("FalseJoker Tile -> " + falseTile.number + ", " + falseTile.color);
+            }
+            yield return m_StartWait;
+            
+            RpcSetFalseJokers();
+            
         }
 
+        [ClientRpc]
+        private void RpcSetFalseJokers()
+        {
+            //Todo Bagimlilik kontrolu!
+            tileRenderer.Render();
+            Debug.Log("RpcSetFalseJokers => " + ind.number.ToString());
+            
+        }
+
+        [Command(requiresAuthority = false)]
+        public void RemovePlayerTile(Tile tile, Model.Player player)
+        {
+            if (isServer) RpcRemovePlayerTile(tile, player);
+        }
+
+        [ClientRpc]
+        private void RpcRemovePlayerTile(Tile tile, Model.Player player)
+        {
+            player.tiles.Remove(tile);
+        }
 
         /// <summary>
         /// Jokerin Belirlenmesi
         /// </summary>
         Tile SetJoker()
         {
-            Tile ind = allTiles[Random.Range(0, 104)];
+            ind = allTiles[Random.Range(0, 104)];
             tileRenderer.tile = ind;
             tileRenderer.Render();
             Tile JokerTile = null;
@@ -137,15 +252,24 @@ namespace Core.Manager
         /// <summary>
         /// Butun Taslarin Table Stackine eklenmesi
         /// </summary>
-        private void CreateTableTiles()
+        IEnumerator CreateTableTiles()
         {
-            tableController.GiveTile(allTiles);
+            RpcCreateTableTiles();
+            table.GiveTile(allTiles);
+            yield return m_StartWait;
+        }
+
+        [ClientRpc]
+        private void RpcCreateTableTiles()
+        {
+            
+            Debug.Log("RpcCreateTableTiles");
         }
 
         /// <summary>
         /// Taslari Karistirir
         /// </summary>
-        public void Shuffler(List<Tile> list)
+        public IEnumerator Shuffler(SyncList<Tile> list)
         {
             int n = list.Count - 1;
             while (n > 1)
@@ -156,6 +280,8 @@ namespace Core.Manager
                 list[n] = value;
                 n--;
             }
+
+            yield return m_StartWait;
         }
         
     }
